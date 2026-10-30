@@ -1,0 +1,69 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-[#0a0a0f] text-white antialiased;
+  }
+
+  *,
+  *::before,
+  *::after {
+    @apply border-white/5;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-[#1a1b26]/80 backdrop-blur-xl border border-white/5 rounded-xl p-6 transition-all duration-200;
+  }
+
+  .glass-card:hover {
+    @apply bg-[#24253a]/80 border-white/10;
+  }
+
+  .btn-primary {
+    @apply bg-emerald-600 hover:bg-emerald-500 text-white font-medium rounded-xl px-6 py-3 transition-all duration-200 
+           focus:outline-none focus:ring-2 focus:ring-emerald-500/50 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-secondary {
+    @apply bg-[#24253a] hover:bg-[#2a2b42] text-gray-300 font-medium rounded-xl px-6 py-3 border border-white/10 
+           transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/20 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .input-field {
+    @apply w-full bg-[#12131a] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 
+           focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all duration-200;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0f;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3a3b4a;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4a4b5a;
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #3a3b4a #0a0a0f;
+}
