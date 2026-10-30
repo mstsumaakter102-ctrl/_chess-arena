@@ -11,10 +11,17 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'Chess Arena',
-  description: 'Real-time multiplayer chess',
+  title: 'Antigravity Chess — Zero-G Mobile Arena',
+  description: 'Real-time multiplayer & zero-G physics chess platform',
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'Antigravity Chess',
+  },
   icons: {
-    icon: '/favicon.ico',
+    icon: '/icons/icon-192.svg',
+    apple: '/icons/icon-192.svg',
   },
 }
 

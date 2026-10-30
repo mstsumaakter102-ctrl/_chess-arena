@@ -1,12 +1,13 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { getSupabaseUrl, getSupabaseAnonKey } from '@/lib/supabase'
 
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    getSupabaseUrl(),
+    getSupabaseAnonKey(),
     {
       cookies: {
         getAll() {
@@ -28,10 +29,11 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const publicPaths = ['/', '/login', '/signup']
-  const isPublicPath = publicPaths.some(
-    (p) => request.nextUrl.pathname === p
-  )
+  const publicPaths = ['/', '/login', '/signup', '/manifest.json', '/sw.js']
+  const isPublicPath =
+    publicPaths.some((p) => request.nextUrl.pathname === p) ||
+    request.nextUrl.pathname.startsWith('/pwa') ||
+    request.nextUrl.pathname.startsWith('/icons')
 
   // Redirect unauthenticated users to login
   if (!user && !isPublicPath) {

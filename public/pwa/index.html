@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Antigravity Chess — Zero-G Mobile Arena</title>
+
+  <!-- PWA & Mobile Web App Meta -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Antigravity Chess">
+  <meta name="theme-color" content="#0B0C10">
+  <meta name="description" content="Sleek Progressive Web App with real-time zero-G physics, offline AI gameplay, and cyber-minimalist design.">
+
+  <!-- Manifest & Icons -->
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/svg+xml" href="./icons/icon-192.svg">
+  <link rel="apple-touch-icon" href="./icons/icon-192.svg">
+
+  <!-- Inter & JetBrains Mono Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+
+  <!-- Background Quantum Particle & Space Canvas -->
+  <canvas id="space-canvas"></canvas>
+
+  <!-- 1. SPLASH LOADING SCREEN -->
+  <div id="splash-screen" class="splash-screen">
+    <div class="splash-content">
+      <div class="orbital-emblem">
+        <div class="emblem-ring ring-outer"></div>
+        <div class="emblem-ring ring-inner"></div>
+        <svg class="crown-svg" viewBox="0 0 48 36" fill="none">
+          <defs>
+            <linearGradient id="splashGold" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#66FCF1" />
+              <stop offset="50%" stop-color="#45A29E" />
+              <stop offset="100%" stop-color="#9D4EDD" />
+            </linearGradient>
+          </defs>
+          <path d="M6 31C18 33 30 33 42 31L41 27C29 29 19 29 7 27L6 31Z" fill="url(#splashGold)" />
+          <path d="M7 27L4 12L14 20L24 5L34 20L44 12L41 27C29 29 19 29 7 27Z" fill="url(#splashGold)" stroke="#66FCF1" stroke-width="0.75" />
+          <circle cx="24" cy="5" r="2.5" fill="#FFFFFF" />
+          <circle cx="4" cy="12" r="2" fill="#66FCF1" />
+          <circle cx="44" cy="12" r="2" fill="#66FCF1" />
+        </svg>
+      </div>
+
+      <h1 class="splash-title">
+        <span>ANTIGRAVITY</span>
+        <span class="gradient-text">CHESS</span>
+      </h1>
+      <p class="splash-subtitle">ZERO-G PHYSICS CHESS PLATFORM</p>
+
+      <div class="quantum-loader">
+        <div id="loader-bar" class="loader-bar"></div>
+      </div>
+
+      <!-- EXACT REQUIRED BRANDING -->
+      <div class="splash-creator">
+        <span class="creator-label">MASTER ARCHITECTURE</span>
+        <p class="creator-name">Designed and Developed by Mohammad Tahsin Sr.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. NATIVE-LOOKING PWA INSTALL PROMPT BANNER -->
+  <div id="pwa-install-banner" class="pwa-banner hidden">
+    <div class="banner-glass">
+      <div class="banner-icon-wrap">
+        <img src="./icons/icon-192.svg" alt="App Icon" class="banner-icon">
+        <span class="online-indicator"></span>
+      </div>
+      <div class="banner-info">
+        <h4>Install Antigravity Chess</h4>
+        <p>Zero latency • Fullscreen • 100% Offline AI play</p>
+      </div>
+      <div class="banner-actions">
+        <button id="pwa-install-btn" class="btn-cyan-glow">Install</button>
+        <button id="pwa-dismiss-btn" class="btn-ghost">Later</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. MAIN MOBILE APP VIEWPORT -->
+  <main class="app-container">
+
+    <!-- TOP HUD BAR -->
+    <header class="top-hud">
+      <div class="hud-brand">
+        <span class="hud-dot"></span>
+        <span class="brand-title">ANTIGRAVITY</span>
+      </div>
+
+      <div class="hud-status">
+        <div id="gravity-pill" class="gravity-pill normal-g" title="Current Gravity State">
+          <span class="pill-dot"></span>
+          <span id="gravity-pill-label">1.0G NORMAL</span>
+        </div>
+        <div id="turn-pill" class="turn-pill white-turn">
+          <span id="turn-label">WHITE TO MOVE</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <button id="sound-btn" class="hud-icon-btn" title="Toggle Spatial Audio">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M11 5L6 9H2v6h4l5 4V5zM19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.08" />
+          </svg>
+        </button>
+        <button id="about-btn" class="hud-icon-btn" title="About & Settings">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 16v-4M12 8h.01" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- OPPONENT BAR (MOBILE COMPACT) -->
+    <section class="player-hud opponent-hud">
+      <div class="player-meta">
+        <div class="player-avatar opponent-avatar">
+          <span id="opponent-avatar-char">AI</span>
+        </div>
+        <div class="player-text">
+          <span id="opponent-name" class="player-name">Quantum Core (Local AI)</span>
+          <span id="opponent-rating" class="player-sub">Level 3 • Mass Damped</span>
+        </div>
+      </div>
+      <div class="player-clock">
+        <span id="opponent-timer">10:00</span>
+      </div>
+    </section>
+
+    <!-- CHESSBOARD & ZERO-G PHYSICS STAGE -->
+    <section class="board-stage">
+      <!-- Gravity Field Compass Overlay -->
+      <div id="gravity-vector-hud" class="gravity-vector-hud">
+        <div class="vector-crosshair"></div>
+        <div id="vector-arrow" class="vector-arrow"></div>
+      </div>
+
+      <!-- Neon Grid Board -->
+      <div id="chessboard-container" class="chessboard-container">
+        <div id="board-grid" class="board-grid"></div>
+        <!-- Dynamic Floating Pieces Layer (Physics Simulated) -->
+        <div id="pieces-layer" class="pieces-layer"></div>
+      </div>
+    </section>
+
+    <!-- PLAYER HUD (CURRENT USER) -->
+    <section class="player-hud self-hud">
+      <div class="player-meta">
+        <div class="player-avatar self-avatar">
+          <span id="self-avatar-char">P</span>
+        </div>
+        <div class="player-text">
+          <span id="self-name" class="player-name">Player (You)</span>
+          <span class="player-sub">Tactical Commander</span>
+        </div>
+      </div>
+      <div class="player-clock active-clock">
+        <span id="self-timer">10:00</span>
+      </div>
+    </section>
+
+    <!-- 4. THUMB-FRIENDLY BOTTOM CONTROL DOCK -->
+    <nav class="bottom-dock">
+      <!-- 1. Antigravity Mode Trigger -->
+      <button id="antigravity-toggle-btn" class="dock-btn antigravity-btn" title="Cycle Antigravity Modes">
+        <span class="dock-btn-glow"></span>
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2v20M17 7l-5-5-5 5M7 17l5 5 5-5" />
+        </svg>
+        <span>Zero-G</span>
+      </button>
+
+      <!-- 2. Gyro Tilt Mode -->
+      <button id="gyro-toggle-btn" class="dock-btn" title="Tilt Phone to Steer Gravity">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="5" y="2" width="14" height="20" rx="3" />
+          <path d="M12 18h.01" />
+        </svg>
+        <span>Gyro Tilt</span>
+      </button>
+
+      <!-- 3. Gravity Pulse / Restore -->
+      <button id="gravity-pulse-btn" class="dock-btn" title="Magnetic Snap Pieces to Grid">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3" />
+          <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+        </svg>
+        <span>Rebound</span>
+      </button>
+
+      <!-- 4. Opponent Selector (AI / Local Pass-and-Play) -->
+      <button id="mode-toggle-btn" class="dock-btn" title="Toggle Play Mode">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+        <span id="mode-label">Vs AI</span>
+      </button>
+    </nav>
+
+    <!-- FLOATING PWA RE-INSTALL PILL (When not standalone) -->
+    <button id="install-pill" class="install-pill hidden">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" />
+      </svg>
+      <span>Install PWA App</span>
+    </button>
+  </main>
+
+  <!-- 5. "ABOUT GAME" & CREDITS SETTINGS MODAL -->
+  <div id="about-modal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <svg class="modal-crown" viewBox="0 0 48 36" width="28" height="21" fill="none">
+            <path d="M6 31C18 33 30 33 42 31L41 27C29 29 19 29 7 27L6 31Z" fill="#66FCF1" />
+            <path d="M7 27L4 12L14 20L24 5L34 20L44 12L41 27C29 29 19 29 7 27Z" fill="#66FCF1" stroke="#FFFFFF" stroke-width="0.5" />
+            <circle cx="24" cy="5" r="2.5" fill="#FFE600" />
+          </svg>
+          <h3>Antigravity Arena v1.0</h3>
+        </div>
+        <button id="modal-close-btn" class="modal-close-btn">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- EXACT REQUIRED CREDIT -->
+        <div class="creator-badge">
+          <span class="badge-tag">LEAD ARCHITECT & DESIGNER</span>
+          <h4 class="creator-statement">Designed and Developed by Mohammad Tahsin Sr.</h4>
+          <p class="creator-desc">Crafted with high-precision physics simulation, offline Service Worker engine, and cyber-spatial ergonomics.</p>
+        </div>
+
+        <!-- PHYSICS MECHANICS GUIDE -->
+        <div class="mechanics-guide">
+          <h5>Core Antigravity Mechanics</h5>
+          <div class="mass-grid">
+            <div class="mass-item">
+              <span class="mass-piece">Pawn</span>
+              <span class="mass-val">Mass 1.0</span>
+              <p>Lightweight drift, prone to gravitational drafts.</p>
+            </div>
+            <div class="mass-item">
+              <span class="mass-piece">Knight / Bishop</span>
+              <span class="mass-val">Mass 3.0</span>
+              <p>Moderate orbital dampening, parabolic rebounds.</p>
+            </div>
+            <div class="mass-item">
+              <span class="mass-piece">Rook</span>
+              <span class="mass-val">Mass 5.0</span>
+              <p>Heavy inertia; resistant to cross-screen drift.</p>
+            </div>
+            <div class="mass-item">
+              <span class="mass-piece">Queen</span>
+              <span class="mass-val">Mass 9.0</span>
+              <p>Singularity pull: Attracts nearby floating pieces.</p>
+            </div>
+            <div class="mass-item full-width">
+              <span class="mass-piece">King</span>
+              <span class="mass-val">Cosmic Anchor (Mass 12.0)</span>
+              <p>Stabilizes board center; check events cause solar flare vibrations.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- PWA STATUS & CONTROLS -->
+        <div class="settings-group">
+          <div class="setting-row">
+            <span>PWA Offline Cache</span>
+            <span id="pwa-status-badge" class="badge-green">Offline Ready • Active</span>
+          </div>
+          <div class="setting-row">
+            <span>Haptic Micro-Rebounds</span>
+            <label class="switch">
+              <input type="checkbox" id="haptics-toggle" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="setting-row">
+            <span>Dynamic Shadows & Trails</span>
+            <label class="switch">
+              <input type="checkbox" id="trails-toggle" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button id="modal-ok-btn" class="btn-cyan-glow full-width">Return to Arena</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio elements generated via Web Audio API inside app.js -->
+  <script src="./app.js"></script>
+</body>
+</html>

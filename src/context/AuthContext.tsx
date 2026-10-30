@@ -1,7 +1,7 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState, useCallback, type ReactNode } from 'react'
-import { createClient } from '@/lib/supabase'
+import { createClient, getSupabaseUrl } from '@/lib/supabase'
 import type { User } from '@supabase/supabase-js'
 import type { Profile } from '@/types'
 
@@ -88,7 +88,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const handleBeforeUnload = () => {
       if (user) {
         // Use sendBeacon for reliable delivery on tab close
-        const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/profiles?id=eq.${user.id}`
+        const url = `${getSupabaseUrl()}/rest/v1/profiles?id=eq.${user.id}`
         const body = JSON.stringify({
           is_online: false,
           last_seen: new Date().toISOString(),

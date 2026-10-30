@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useAuth } from '@/context/AuthContext'
-import { Crown, Users, LayoutDashboard, User as UserIcon, LogOut, Loader2 } from 'lucide-react'
+import { Crown, Users, LayoutDashboard, User as UserIcon, LogOut, Loader2, Smartphone } from 'lucide-react'
 import { useRouter, usePathname } from 'next/navigation'
 import { motion } from 'framer-motion'
 
@@ -18,6 +18,7 @@ export default function Navbar() {
 
   const navLinks = [
     { href: '/dashboard', label: 'Play / Lobby', icon: LayoutDashboard },
+    { href: '/pwa/index.html', label: 'Zero-G PWA', icon: Smartphone },
     { href: '/friends', label: 'Friends', icon: Users },
     { href: '/profile', label: 'Profile', icon: UserIcon },
   ]

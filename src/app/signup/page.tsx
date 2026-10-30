@@ -40,7 +40,7 @@ export default function SignupPage() {
 
     setLoading(true)
     try {
-      // 1. Sign up user with metadata
+      // 1. Sign up user with metadata (trigger automatically initializes profile in database)
       const { data, error } = await supabase.auth.signUp({
         email: email.trim(),
         password,
@@ -58,21 +58,30 @@ export default function SignupPage() {
       }
 
       if (data?.user) {
-        // Guarantee profile row exists with display name
-        await supabase.from('profiles').upsert({
-          id: data.user.id,
-          username: cleanUsername,
-          display_name: cleanDisplayName,
-          rating: 1200,
-          is_online: true,
-        })
+        // Optionally update or verify profile record
+        try {
+          await supabase.from('profiles').upsert({
+            id: data.user.id,
+            username: cleanUsername,
+            display_name: cleanDisplayName,
+            rating: 1200,
+            is_online: true,
+          })
+        } catch {
+          // Automatically handled by database trigger on_auth_user_created
+        }
 
-        toast.success('Account created! Welcome to Chess Arena.')
-        router.push('/dashboard')
-        router.refresh()
+        if (data.session) {
+          toast.success('Account created! Welcome to Chess Arena.')
+          router.push('/dashboard')
+          router.refresh()
+        } else {
+          toast.success('Account created! Please check your email to confirm or sign in.')
+          router.push('/login')
+        }
       }
     } catch (err: any) {
-      toast.error('An unexpected error occurred during signup.')
+      toast.error(err?.message || 'An unexpected error occurred during signup.')
     } finally {
       setLoading(false)
     }
